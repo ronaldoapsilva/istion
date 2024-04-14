@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: circuit-breaker-servicex
+spec:
+  host: servicex-service.default.svc.cluster.local
+  trafficPolicy:
+    outlierDetection: # essa policy é o circuit breaker
+      # consecutive5xxErrors: 20 # a quantidade consecutivos que erro 5xx
+      consecutiveGatewayErrors: 5 # a quantidade de error apenas 504, pois sei que a aplicaçao só vai dar erro 504
+      interval: 20s # aqui vai o ser o tempo i.e: se em 10s der 20 erros 5xx, ele vai ejetar o serviço
+      baseEjectionTime: 30s # ele vai ejetar o serviço por 30s
+      maxEjectionPercent: 100 # o percentual dos pods que vai ser removido
